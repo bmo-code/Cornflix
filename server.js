@@ -16,7 +16,8 @@ app.on( 'stormpath.ready', function() {
 
     console.log("Application ready on 8080");
 } );
-var mongoose = require( 'mongoose' );
+var mongoose = require( 'mongoose')
+    , Schema = mongoose.Schema;
 var morgan = require( 'morgan' ); //log requests to the console
 var bodyParser = require( 'body-parser' ); //pull information from HTML POST
 var methodeOverride = require( 'method-override' ); //simulate DELETE and PUT
@@ -73,7 +74,7 @@ app.get( '/api/ingredients/:ingredient_name', function( req, res ) {
 } );
 
 app.get( '/api/meals', function( req, res ) {
-    Meal.find()
+    /*Meal.find()
         .populate('ingredients', '_id', 'name', 'weight')
         .exec(function(err, meals) {
             if (err) {
@@ -81,14 +82,14 @@ app.get( '/api/meals', function( req, res ) {
                 return res.send(err);
             }
             res.json(meals);
-        });
-/*    Meal.find( function( err, meals ) {
+        });*/
+    Meal.find( function( err, meals ) {
         if ( err ) {
             console.log( err );
             return res.send( err );
         }
         res.json( meals );
-    } );*/
+    } );
 } );
 
 
@@ -123,7 +124,7 @@ app.delete( '/api/meals/:meal_id', function( req, res ) {
 } );
 
 app.post( '/api/meals/searchByName', function( req, res ) {
-    Meal.find({
+/*    Meal.find({
         name: { "$regex": req.body.name, "$options": "i" }
         })
         .populate('ingredients', '_id', 'name', 'weight')
@@ -133,8 +134,8 @@ app.post( '/api/meals/searchByName', function( req, res ) {
                 return res.send(err);
             }
             res.json(meals);
-        });
-    /*Meal.find( {
+        });*/
+    Meal.find( {
         name: { "$regex": req.body.name, "$options": "i" }
     }, function( err, meals ) {
         if ( err ) {
@@ -142,7 +143,7 @@ app.post( '/api/meals/searchByName', function( req, res ) {
             return res.send( err );
         }
         res.json( meals );
-    } );*/
+    } );
 } )
 
 app.post( '/api/profile/searchByEmail', function( req, res ) {
@@ -209,23 +210,8 @@ app.get( '*', function( req, res ) {
 } );
 
 //  MONGO MODELS
-var Meal = mongoose.model( 'meals', {
-    user_id: String,
-    public: Boolean,
-    name: String,
-    description: String,
-    ingredients: [{ type: Number, ref: 'Ingredient'}]
-    //ingredients: [ { _id: String, name: String, weight: Number } ]
-} );
 
-var Feedback = mongoose.model( 'feedbacks', {
-    mail: String,
-    category: String,
-    type: String,
-    comment: String
-} );
-
-var Ingredient = mongoose.model( 'ingredients', {
+var ingredientSchema = Schema({
     category: String,
     name: String,
     weight: Number,
@@ -269,4 +255,24 @@ var Ingredient = mongoose.model( 'ingredients', {
     vitamine_b9_microg: Number,
     alcool_g: Number,
     cholesterol_mg: Number
+});
+
+var mealSchema = Schema({
+    user_id: String,
+    public: Boolean,
+    name: String,
+    description: String,
+    //ingredients: [{ type: Schema.Types.ObjectId, ref: 'Ingredient'}]
+    ingredients: [ { _id: String, name: String, weight: Number } ]
+});
+
+var Ingredient = mongoose.model( 'ingredients', ingredientSchema);
+
+var Meal = mongoose.model( 'meals', mealSchema);
+
+var Feedback = mongoose.model( 'feedbacks', {
+    mail: String,
+    category: String,
+    type: String,
+    comment: String
 } );
