@@ -73,7 +73,7 @@ app.get( '/api/ingredients/:ingredient_name', function( req, res ) {
 } );
 
 app.get( '/api/meals', function( req, res ) {
-    Meal.find( function( err, meals ) {
+    Meals.find( function( err, meals ) {
         if ( err ) {
             console.log( err );
             return res.send( err );
@@ -85,7 +85,7 @@ app.get( '/api/meals', function( req, res ) {
 
 
 app.post( '/api/meals', function( req, res ) {
-    Meal.create( req.body,
+    Meals.create( req.body,
         function( err, meal ) {
             if ( err ) {
                 console.log( err );
@@ -96,14 +96,14 @@ app.post( '/api/meals', function( req, res ) {
 } );
 
 app.delete( '/api/meals/:meal_id', function( req, res ) {
-    Meal.remove( {
+    Meals.remove( {
         _id: req.params.meal_id
     }, function( err, result ) {
         if ( err ) {
             console.log( err );
             return res.send( err );
         }
-        Meal.find( function( err, meals ) {
+        Meals.find( function( err, meals ) {
             if ( err ) {
                 console.log( err );
                 return res.send( err );
@@ -114,7 +114,7 @@ app.delete( '/api/meals/:meal_id', function( req, res ) {
 } );
 
 app.post( '/api/meals/searchByName', function( req, res ) {
-    Meal.find( {
+    Meals.find( {
         name: { "$regex": req.body.name, "$options": "i" }
     }, function( err, meals ) {
         if ( err ) {
@@ -152,7 +152,7 @@ app.post('/api/meals/searchByNutrient', function(req, res) {
     if (req.body.orderBy) {
         option.options = { sort: { [req.body.nutrient]: req.body.orderBy} };
     }
-    Meal.find()
+    Meals.find()
         .populate(option)
         .exec(function(err, data) {
             if (err) {
@@ -166,7 +166,7 @@ app.post('/api/meals/searchByNutrient', function(req, res) {
 app.post( '/api/profile/searchByEmail', function( req, res ) {
     console.log("on est dedans");
     console.log(JSON.parse(req.body.email));
-    Meal.find( {
+    Meals.find( {
         user_id: { "$regex": JSON.parse(req.body.email), "$options": "i" }
     }, function( err, meals ) {
         if ( err ) {
@@ -229,7 +229,7 @@ app.get( '*', function( req, res ) {
 } );
 
 //  MONGO MODELS
-var Meal = mongoose.model( 'meal', {
+var Meals = mongoose.model( 'meal', {
     user_id: String,
     public: Boolean,
     name: String,
