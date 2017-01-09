@@ -73,13 +73,22 @@ app.get( '/api/ingredients/:ingredient_name', function( req, res ) {
 } );
 
 app.get( '/api/meals', function( req, res ) {
-    Meal.find( function( err, meals ) {
+    Meal.find()
+        .populate('ingredients', '_id', 'name', 'weight')
+        .exec(function(err, meals) {
+            if (err) {
+                console.log(err);
+                return res.send(err);
+            }
+            res.json(meals);
+        });
+/*    Meal.find( function( err, meals ) {
         if ( err ) {
             console.log( err );
             return res.send( err );
         }
         res.json( meals );
-    } );
+    } );*/
 } );
 
 
@@ -114,7 +123,18 @@ app.delete( '/api/meals/:meal_id', function( req, res ) {
 } );
 
 app.post( '/api/meals/searchByName', function( req, res ) {
-    Meal.find( {
+    Meal.find({
+        name: { "$regex": req.body.name, "$options": "i" }
+        })
+        .populate('ingredients', '_id', 'name', 'weight')
+        .exec(function(err, meals) {
+            if (err) {
+                console.log(err);
+                return res.send(err);
+            }
+            res.json(meals);
+        });
+    /*Meal.find( {
         name: { "$regex": req.body.name, "$options": "i" }
     }, function( err, meals ) {
         if ( err ) {
@@ -122,7 +142,7 @@ app.post( '/api/meals/searchByName', function( req, res ) {
             return res.send( err );
         }
         res.json( meals );
-    } );
+    } );*/
 } )
 
 app.post( '/api/profile/searchByEmail', function( req, res ) {
@@ -194,7 +214,8 @@ var Meal = mongoose.model( 'meals', {
     public: Boolean,
     name: String,
     description: String,
-    ingredients: [ { _id: String, name: String, weight: Number } ]
+    ingredients: [{ type: Number, ref: 'Ingredient'}]
+    //ingredients: [ { _id: String, name: String, weight: Number } ]
 } );
 
 var Feedback = mongoose.model( 'feedbacks', {
