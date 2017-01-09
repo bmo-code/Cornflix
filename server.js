@@ -51,7 +51,7 @@ console.log( "App listening on port 8080" );
 
 //  ROUTES
 app.get( '/api/ingredients', function( req, res ) {
-    Ingredients.find( function( err, ingredients ) {
+    Ingredient.find( function( err, ingredients ) {
         if ( err ) {
             console.log( err );
             return res.send( err );
@@ -61,7 +61,7 @@ app.get( '/api/ingredients', function( req, res ) {
 } );
 
 app.get( '/api/ingredients/:ingredient_name', function( req, res ) {
-    Ingredients.find( {
+    Ingredient.find( {
         name: req.params.ingredient_name
     }, function( err, ingredients ) {
         if ( err ) {
@@ -73,7 +73,7 @@ app.get( '/api/ingredients/:ingredient_name', function( req, res ) {
 } );
 
 app.get( '/api/meals', function( req, res ) {
-    Meals.find( function( err, meals ) {
+    Meal.find( function( err, meals ) {
         if ( err ) {
             console.log( err );
             return res.send( err );
@@ -85,7 +85,7 @@ app.get( '/api/meals', function( req, res ) {
 
 
 app.post( '/api/meals', function( req, res ) {
-    Meals.create( req.body,
+    Meal.create( req.body,
         function( err, meal ) {
             if ( err ) {
                 console.log( err );
@@ -96,14 +96,14 @@ app.post( '/api/meals', function( req, res ) {
 } );
 
 app.delete( '/api/meals/:meal_id', function( req, res ) {
-    Meals.remove( {
+    Meal.remove( {
         _id: req.params.meal_id
     }, function( err, result ) {
         if ( err ) {
             console.log( err );
             return res.send( err );
         }
-        Meals.find( function( err, meals ) {
+        Meal.find( function( err, meals ) {
             if ( err ) {
                 console.log( err );
                 return res.send( err );
@@ -114,7 +114,7 @@ app.delete( '/api/meals/:meal_id', function( req, res ) {
 } );
 
 app.post( '/api/meals/searchByName', function( req, res ) {
-    Meals.find( {
+    Meal.find( {
         name: { "$regex": req.body.name, "$options": "i" }
     }, function( err, meals ) {
         if ( err ) {
@@ -128,7 +128,7 @@ app.post( '/api/meals/searchByName', function( req, res ) {
 app.post( '/api/profile/searchByEmail', function( req, res ) {
     console.log("on est dedans");
     console.log(JSON.parse(req.body.email));
-    Meals.find( {
+    Meal.find( {
         user_id: { "$regex": JSON.parse(req.body.email), "$options": "i" }
     }, function( err, meals ) {
         if ( err ) {
@@ -143,7 +143,7 @@ app.post( '/api/ingredients/searchById', function( req, res ) {
     var ingredients = [];
     var i = 0;
     for ( var j = 0; j < req.body.length; j++ ) {
-        Ingredients.findOne( {
+        Ingredient.findOne( {
             _id: req.body[ j ]._id
         }, function( err, ingredient ) {
             if ( err ) {
@@ -159,7 +159,7 @@ app.post( '/api/ingredients/searchById', function( req, res ) {
 } )
 
 app.post( '/api/ingredients/searchByName', function( req, res ) {
-    Ingredients.find( {
+    Ingredient.find( {
         name: { "$regex": req.body.name, "$options": "i" }
     }, function( err, ingredients ) {
         if ( err ) {
@@ -171,7 +171,7 @@ app.post( '/api/ingredients/searchByName', function( req, res ) {
 } )
 
 app.post( '/api/feedbacks', function( req, res ) {
-    Feedbacks.create( req.body,
+    Feedback.create( req.body,
         function( err, feedback ) {
             if ( err ) {
                 console.log( err );
@@ -191,7 +191,7 @@ app.get( '*', function( req, res ) {
 } );
 
 //  MONGO MODELS
-var Meals = mongoose.model( 'meal', {
+var Meal = mongoose.model( 'Meal', {
     user_id: String,
     public: Boolean,
     name: String,
@@ -199,14 +199,14 @@ var Meals = mongoose.model( 'meal', {
     ingredients: [ { _id: String, name: String, weight: Number } ]
 } );
 
-var Feedbacks = mongoose.model( 'feedback', {
+var Feedback = mongoose.model( 'Feedback', {
     mail: String,
     category: String,
     type: String,
     comment: String
 } );
 
-var Ingredients = mongoose.model( 'ingredient', {
+var Ingredient = mongoose.model( 'Ingredient', {
     category: String,
     name: String,
     weight: Number,
