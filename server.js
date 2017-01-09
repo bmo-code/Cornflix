@@ -50,6 +50,73 @@ app.use( methodeOverride() );
 app.listen( 8080 );
 console.log( "App listening on port 8080" );
 
+//  MONGO MODELS
+var ingredientSchema = Schema({
+    category: String,
+    name: String,
+    weight: Number,
+    sodium_mg: Number,
+    magnesium_mg: Number,
+    phosphore_mg: Number,
+    potassium_mg: Number,
+    calcium_mg: Number,
+    manganese_mg: Number,
+    fer_mg: Number,
+    cuivre_mg: Number,
+    zinc_mg: Number,
+    selenium_microg: Number,
+    iode_microg: Number,
+    proteine_g: Number,
+    proteine_brute_g: Number,
+    glucide_g: Number,
+    sucre_g: Number,
+    energie_kj: Number,
+    energie_kcal: Number,
+    amidon_g: Number,
+    energie_jones_kj: Number,
+    energie_jones_kcal: Number,
+    polyols_g: Number,
+    fibre_g: Number,
+    eau_g: Number,
+    lipide_g: Number,
+    acide_gras_sature_g: Number,
+    beta_carotene_microg: Number,
+    vitamine_d_microg: Number,
+    vitamine_e_mg: Number,
+    vitamine_k1_microg: Number,
+    vitamine_k2_microg: Number,
+    vitamine_c_mg: Number,
+    vitamine_b1_mg: Number,
+    vitamine_b2_mg: Number,
+    vitamine_b3: Number,
+    vitamine_b5_mg: Number,
+    vitamine_b6_mg: Number,
+    vitamine_b12_microg: Number,
+    vitamine_b9_microg: Number,
+    alcool_g: Number,
+    cholesterol_mg: Number
+});
+
+var mealSchema = Schema({
+    user_id: String,
+    public: Boolean,
+    name: String,
+    description: String,
+    ingredients: [{ type: Schema.Types.ObjectId, ref: 'Ingredient'}]
+    //ingredients: [ { _id: String, name: String, weight: Number } ]
+});
+
+var Ingredient = mongoose.model( 'Ingredient', ingredientSchema);
+
+var Meal = mongoose.model( 'Meal', mealSchema);
+
+var Feedback = mongoose.model( 'Feedback', {
+    mail: String,
+    category: String,
+    type: String,
+    comment: String
+} );
+
 //  ROUTES
 app.get( '/api/ingredients', function( req, res ) {
     Ingredient.find( function( err, ingredients ) {
@@ -74,25 +141,23 @@ app.get( '/api/ingredients/:ingredient_name', function( req, res ) {
 } );
 
 app.get( '/api/meals', function( req, res ) {
-    /*Meal.find()
-        .populate('ingredients', '_id', 'name', 'weight')
+    Meal.find()
+        .populate('ingredients')
         .exec(function(err, meals) {
             if (err) {
                 console.log(err);
                 return res.send(err);
             }
             res.json(meals);
-        });*/
-    Meal.find( function( err, meals ) {
+        });
+/*    Meal.find( function( err, meals ) {
         if ( err ) {
             console.log( err );
             return res.send( err );
         }
         res.json( meals );
-    } );
+    });*/
 } );
-
-
 
 app.post( '/api/meals', function( req, res ) {
     Meal.create( req.body,
@@ -124,18 +189,18 @@ app.delete( '/api/meals/:meal_id', function( req, res ) {
 } );
 
 app.post( '/api/meals/searchByName', function( req, res ) {
-/*    Meal.find({
+    Meal.find({
         name: { "$regex": req.body.name, "$options": "i" }
         })
-        .populate('ingredients', '_id', 'name', 'weight')
+        .populate('ingredients')
         .exec(function(err, meals) {
             if (err) {
                 console.log(err);
                 return res.send(err);
             }
             res.json(meals);
-        });*/
-    Meal.find( {
+        });
+/*    Meal.find( {
         name: { "$regex": req.body.name, "$options": "i" }
     }, function( err, meals ) {
         if ( err ) {
@@ -143,7 +208,7 @@ app.post( '/api/meals/searchByName', function( req, res ) {
             return res.send( err );
         }
         res.json( meals );
-    } );
+    } );*/
 } )
 
 app.post( '/api/profile/searchByEmail', function( req, res ) {
@@ -207,72 +272,4 @@ app.post( '/api/feedbacks', function( req, res ) {
 
 app.get( '*', function( req, res ) {
     res.sendfile( './public/index.html' );
-} );
-
-//  MONGO MODELS
-
-var ingredientSchema = Schema({
-    category: String,
-    name: String,
-    weight: Number,
-    sodium_mg: Number,
-    magnesium_mg: Number,
-    phosphore_mg: Number,
-    potassium_mg: Number,
-    calcium_mg: Number,
-    manganese_mg: Number,
-    fer_mg: Number,
-    cuivre_mg: Number,
-    zinc_mg: Number,
-    selenium_microg: Number,
-    iode_microg: Number,
-    proteine_g: Number,
-    proteine_brute_g: Number,
-    glucide_g: Number,
-    sucre_g: Number,
-    energie_kj: Number,
-    energie_kcal: Number,
-    amidon_g: Number,
-    energie_jones_kj: Number,
-    energie_jones_kcal: Number,
-    polyols_g: Number,
-    fibre_g: Number,
-    eau_g: Number,
-    lipide_g: Number,
-    acide_gras_sature_g: Number,
-    beta_carotene_microg: Number,
-    vitamine_d_microg: Number,
-    vitamine_e_mg: Number,
-    vitamine_k1_microg: Number,
-    vitamine_k2_microg: Number,
-    vitamine_c_mg: Number,
-    vitamine_b1_mg: Number,
-    vitamine_b2_mg: Number,
-    vitamine_b3: Number,
-    vitamine_b5_mg: Number,
-    vitamine_b6_mg: Number,
-    vitamine_b12_microg: Number,
-    vitamine_b9_microg: Number,
-    alcool_g: Number,
-    cholesterol_mg: Number
-});
-
-var mealSchema = Schema({
-    user_id: String,
-    public: Boolean,
-    name: String,
-    description: String,
-    //ingredients: [{ type: Schema.Types.ObjectId, ref: 'Ingredient'}]
-    ingredients: [ { _id: String, name: String, weight: Number } ]
-});
-
-var Ingredient = mongoose.model( 'ingredients', ingredientSchema);
-
-var Meal = mongoose.model( 'meals', mealSchema);
-
-var Feedback = mongoose.model( 'feedbacks', {
-    mail: String,
-    category: String,
-    type: String,
-    comment: String
 } );
