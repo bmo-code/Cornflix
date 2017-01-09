@@ -21,6 +21,8 @@ var mongoose = require( 'mongoose')
 var morgan = require( 'morgan' ); //log requests to the console
 var bodyParser = require( 'body-parser' ); //pull information from HTML POST
 var methodeOverride = require( 'method-override' ); //simulate DELETE and PUT
+var PDFDocument = require ('pdfkit');
+fs = require ('fs')
 /*
 app.get('/email', stormpath.loginRequired, function (req, res) {
   res.send('Your email address is: ' + req.user.email);
@@ -159,6 +161,34 @@ app.get( '/api/meals', function( req, res ) {
         res.json( meals );
     });*/
 } );
+
+app.get( '/api/meal/pdfExport/:id', function( req, res ) {
+    Meal.findOne({
+        _id: req.params.id
+    }, function (err, meal) {
+        if (err) {
+            console.log(err);
+            return res.send(err);
+        }
+        if (meal == null) {
+            return null;
+        }
+        var doc = new PDFDocument;
+        res.writeHead(200, {
+            'Content-Type': 'application/pdf',
+            'Access-Control-Allow-Origin': '*',
+            'Content-Disposition': 'attachment; filename=' + meal.name + '.pdf'
+        });
+
+        doc.fontSize(25)
+            .text(meal.name, {
+                align: 'center'
+            });
+
+        doc.pipe(res);
+        doc.end();
+    });
+});
 
 app.post( '/api/meals', function( req, res ) {
     Meal.create( req.body,
