@@ -131,9 +131,7 @@ app.post( '/api/profile/searchByEmail', function( req, res ) {
     Meal.find( {
         user_id: { "$regex": JSON.parse(req.body.email), "$options": "i" }
     }, function( err, meals ) {
-        if ( err ) {
-            res.send( err );
-        }
+        if ( err ) res.send( err );
         console.log(meals);
         res.json( meals );
     } );
@@ -191,7 +189,7 @@ app.get( '*', function( req, res ) {
 } );
 
 //  MONGO MODELS
-var Meal = mongoose.model( 'Meal', {
+var Meal = mongoose.model( 'meals', {
     user_id: String,
     public: Boolean,
     name: String,
@@ -199,14 +197,14 @@ var Meal = mongoose.model( 'Meal', {
     ingredients: [ { _id: String, name: String, weight: Number } ]
 } );
 
-var Feedback = mongoose.model( 'Feedback', {
+var Feedback = mongoose.model( 'feedbacks', {
     mail: String,
     category: String,
     type: String,
     comment: String
 } );
 
-var Ingredient = mongoose.model( 'Ingredient', {
+var Ingredient = mongoose.model( 'ingredients', {
     category: String,
     name: String,
     weight: Number,
