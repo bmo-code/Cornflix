@@ -2,18 +2,31 @@
 
 Nutrional web app developed for Node.js school project
 
-##Get onboard
+##Installation
 
-- Clone this repository
-- Install npm dependecies
-- Setup database
-- Run in shell: node server.js
+- Clone this repository:
+`
+git clone git@github.com:bmo-code/Cornflix.git
+`   
+- Install npm dependencies:
+`
+npm install
+`
+- Install mongodb:
+`
+apt-get install mongo-org
+`
 
-##Database setup
+##Running the app
 
-MongoDB should be installed.
-
-- Run in shell: mongoimport --db food --collection ingredients ingredients.json --jsonArray
+- Import database: 
+`
+mongoimport --db food --collection ingredients ingredients.json --jsonArray
+`
+- Launch app:
+`
+node server.js
+`
 
 ##Git flow
 
