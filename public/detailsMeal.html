@@ -40,6 +40,7 @@
             <li class="list-group-item" ng-repeat="ingredient in addedDetailsMeal.ingredients" >{{ingredient.name}} - {{ingredient.weight}}g</li>
         </ul>
     </div>
+    <a ng-href="/api/meal/pdfExport/{{addedDetailsMeal._id}}" target="_blank">Télécharger PDF</a>
 </div>
 
 <!-- NUTRITIONAL RESULTS -->

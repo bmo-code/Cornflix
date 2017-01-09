@@ -194,7 +194,7 @@ function mainController( $scope, $http ) {
         for ( i in $scope.mealSearchResult ) {
             if ( $scope.mealSearchResult[ i ]._id == id ) {
                 var meal = $scope.mealSearchResult[ i ];
-                getMealBilan( meal.ingredients, function( data ) {
+                getMealBilan(meal.ingredients, meal.quantity_g, function( data ) {
                     meal.bilan = data;
                     $scope.addedMeals.push( meal );
                 } );

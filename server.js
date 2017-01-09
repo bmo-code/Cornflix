@@ -162,32 +162,76 @@ app.get( '/api/meals', function( req, res ) {
     });*/
 } );
 
-app.get( '/api/meal/pdfExport/:id', function( req, res ) {
+app.get('/api/meal/pdfExport/:id', function (req, res) {
+    console.log('test');
     Meal.findOne({
         _id: req.params.id
-    }, function (err, meal) {
-        if (err) {
-            console.log(err);
-            return res.send(err);
-        }
-        if (meal == null) {
-            return null;
-        }
-        var doc = new PDFDocument;
-        res.writeHead(200, {
-            'Content-Type': 'application/pdf',
-            'Access-Control-Allow-Origin': '*',
-            'Content-Disposition': 'attachment; filename=' + meal.name + '.pdf'
-        });
-
-        doc.fontSize(25)
-            .text(meal.name, {
-                align: 'center'
+    }).populate('ingredients')
+        .exec(function (err, meal) {
+            if (err) {
+                console.log(err);
+                return res.send(err);
+            }
+            if (meal == null) {
+                return null;
+            }
+            var doc = new PDFDocument;
+            res.writeHead(200, {
+                'Content-Type': 'application/pdf',
+                'Access-Control-Allow-Origin': '*',
+                'Content-Disposition': 'attachment; filename=' + meal.name + '.pdf'
             });
+            doc.image('./public/logo.png');
 
-        doc.pipe(res);
-        doc.end();
-    });
+            doc.fontSize(25)
+                .moveDown()
+                .text(meal.name, {
+                    align: 'center'
+                });
+            doc.fontSize(17)
+                .moveDown()
+                .text('Description', {
+                    align: 'left'
+                });
+            doc.fontSize(13)
+                .moveDown()
+                .text(meal.description, {
+                    align: 'justify'
+                });
+
+            doc.fontSize(17)
+                .moveDown()
+                .text('Ingrédients', {
+                    align: 'left'
+                });
+
+            meal.ingredients.forEach(function (element, index, key) {
+                doc.fontSize(13)
+                    .text(element.name + '   ' + meal.quantity_g[index], {
+                        align: 'left'
+                    });
+            });
+            doc.fontSize(17)
+                .moveDown()
+                .text('Bilan', {
+                    align: 'center'
+                });
+            var bilan = {};
+            ingredientSchema.eachPath(function (key) {
+                bilan[key] = 0;
+                //add every ingredients property by a ratio of its weight
+                for (i in meal.ingredients) {
+                    bilan[key] += Math.round(( bilan[key] + meal.ingredients[i][key] ) * 100 / 100 * 10 / 100);//data[ i ].weight / 100 ); remplacer 10 par le poid
+                }
+                if (!isNaN(bilan[key]))
+                doc.fontSize(13)
+                    .text(key + ' ' + bilan[key], {
+                        align: 'left',
+                    });
+            });
+            doc.pipe(res);
+            doc.end();
+        });
 });
 
 app.post( '/api/meals', function( req, res ) {
