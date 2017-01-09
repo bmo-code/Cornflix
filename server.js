@@ -125,44 +125,6 @@ app.post( '/api/meals/searchByName', function( req, res ) {
     } );
 } )
 
-app.post('/api/meals/searchByNutrient', function(req, res) {
-    var option = {
-        path: 'ingredients',
-        options: { sort: { [req.body.nutrient]: 'desc'} }
-    };
-    if (req.body.gte) {
-        option.match = { 
-            [req.body.nutrient]: {
-                $gte: req.body.gte
-            } 
-        }
-    } else if (req.body.lte) {
-        option.match = {
-            [req.body.nutrient]: {
-                $lte: req.body.lte
-            }
-        }
-    } else if (req.body.eq) {
-        option.match = {
-            [req.body.eq]: {
-                $eq: req.body.eq
-            }
-        }
-    }
-    if (req.body.orderBy) {
-        option.options = { sort: { [req.body.nutrient]: req.body.orderBy} };
-    }
-    Meals.find()
-        .populate(option)
-        .exec(function(err, data) {
-            if (err) {
-                res.send(err);
-            } else {
-                res.json(data);
-            }
-        });
-})
-
 app.post( '/api/profile/searchByEmail', function( req, res ) {
     console.log("on est dedans");
     console.log(JSON.parse(req.body.email));
