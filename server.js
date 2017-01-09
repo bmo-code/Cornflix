@@ -51,7 +51,7 @@ console.log( "App listening on port 8080" );
 
 //  ROUTES
 app.get( '/api/ingredients', function( req, res ) {
-    Ingredient.find( function( err, ingredients ) {
+    Ingredients.find( function( err, ingredients ) {
         if ( err ) {
             console.log( err );
             return res.send( err );
@@ -61,7 +61,7 @@ app.get( '/api/ingredients', function( req, res ) {
 } );
 
 app.get( '/api/ingredients/:ingredient_name', function( req, res ) {
-    Ingredient.find( {
+    Ingredients.find( {
         name: req.params.ingredient_name
     }, function( err, ingredients ) {
         if ( err ) {
@@ -125,13 +125,53 @@ app.post( '/api/meals/searchByName', function( req, res ) {
     } );
 } )
 
+app.post('/api/meals/searchByNutrient', function(req, res) {
+    var option = {
+        path: 'ingredients',
+        options: { sort: { [req.body.nutrient]: 'desc'} }
+    };
+    if (req.body.gte) {
+        option.match = { 
+            [req.body.nutrient]: {
+                $gte: req.body.gte
+            } 
+        }
+    } else if (req.body.lte) {
+        option.match = {
+            [req.body.nutrient]: {
+                $lte: req.body.lte
+            }
+        }
+    } else if (req.body.eq) {
+        option.match = {
+            [req.body.eq]: {
+                $eq: req.body.eq
+            }
+        }
+    }
+    if (req.body.orderBy) {
+        option.options = { sort: { [req.body.nutrient]: req.body.orderBy} };
+    }
+    Meal.find()
+        .populate(option)
+        .exec(function(err, data) {
+            if (err) {
+                res.send(err);
+            } else {
+                res.json(data);
+            }
+        });
+})
+
 app.post( '/api/profile/searchByEmail', function( req, res ) {
     console.log("on est dedans");
     console.log(JSON.parse(req.body.email));
     Meal.find( {
         user_id: { "$regex": JSON.parse(req.body.email), "$options": "i" }
     }, function( err, meals ) {
-        if ( err ) res.send( err );
+        if ( err ) {
+            res.send( err );
+        }
         console.log(meals);
         res.json( meals );
     } );
@@ -141,7 +181,7 @@ app.post( '/api/ingredients/searchById', function( req, res ) {
     var ingredients = [];
     var i = 0;
     for ( var j = 0; j < req.body.length; j++ ) {
-        Ingredient.findOne( {
+        Ingredients.findOne( {
             _id: req.body[ j ]._id
         }, function( err, ingredient ) {
             if ( err ) {
@@ -157,7 +197,7 @@ app.post( '/api/ingredients/searchById', function( req, res ) {
 } )
 
 app.post( '/api/ingredients/searchByName', function( req, res ) {
-    Ingredient.find( {
+    Ingredients.find( {
         name: { "$regex": req.body.name, "$options": "i" }
     }, function( err, ingredients ) {
         if ( err ) {
@@ -169,7 +209,7 @@ app.post( '/api/ingredients/searchByName', function( req, res ) {
 } )
 
 app.post( '/api/feedbacks', function( req, res ) {
-    Feedback.create( req.body,
+    Feedbacks.create( req.body,
         function( err, feedback ) {
             if ( err ) {
                 console.log( err );
@@ -189,7 +229,7 @@ app.get( '*', function( req, res ) {
 } );
 
 //  MONGO MODELS
-var Meal = mongoose.model( 'meals', {
+var Meal = mongoose.model( 'meal', {
     user_id: String,
     public: Boolean,
     name: String,
@@ -197,14 +237,14 @@ var Meal = mongoose.model( 'meals', {
     ingredients: [ { _id: String, name: String, weight: Number } ]
 } );
 
-var Feedback = mongoose.model( 'feedbacks', {
+var Feedbacks = mongoose.model( 'feedback', {
     mail: String,
     category: String,
     type: String,
     comment: String
 } );
 
-var Ingredient = mongoose.model( 'ingredients', {
+var Ingredients = mongoose.model( 'ingredient', {
     category: String,
     name: String,
     weight: Number,
