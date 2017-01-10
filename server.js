@@ -102,7 +102,8 @@ var mealSchema = Schema({
     public: Boolean,
     name: String,
     description: String,
-    ingredients: [{ type: Schema.Types.ObjectId, ref: 'Ingredient'}]
+    ingredients: [{ type: Schema.Types.ObjectId, ref: 'Ingredient'}],
+    quantity_g: [Number] 
     //ingredients: [ { _id: String, name: String, weight: Number } ]
 });
 
