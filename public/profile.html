@@ -1,0 +1,49 @@
+<!-- NAVBAR !-->
+<div ng-include src="'navbar.html'"></div>
+
+
+<!-- a gap is necessary to acomodate the navbar : to be modified ? -->
+<br><br><br><br>
+
+<!-- MESSAGE IF USER IS DISCONNECTED -->
+<div ng-show="userData.email == null">
+    <div class="col-sm-4 col-md-4 col-lg-12">
+        <p style="text-align : center"> Please, login or register to access to your saved meals, profile options, or
+            #### </p>
+        <div style="text-align : center">
+            <a class="btn btn-success" href="login" role="button">Login</a>
+            <a class="btn btn-info" href="register" role="button">Register</a>
+        </div>
+    </div>
+</div>
+
+<!-- USER IS CONNECTED : Display profile -->
+<div ng-show="userData.email != null">
+    <!-- HEADER -->
+    <div class="jumbotron text-center">
+        <h1>Your profile </h1>
+    </div>
+    <!-- Random info -->
+    <div class="jumbotron text-center">
+        <h3><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Personnal information </h3>
+        <p> Complete name : {{userData.fullName}}</p>
+        <p> Email adress : {{userData.email}}</p>
+        <p> Last password change : {{userData.passwordModifiedAt}}</p>
+        <p> Status of your registration : {{userData.emailVerificationStatus}} </p>
+    </div>
+
+    <div class="jumbotron text-center">
+        <h3><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Meals created </h3>
+        <button class="btn btn-default" type="submit" ng-click="searchMealByEmail()">Refresh</button>
+        <div class="row" id="ingredient-search-result">
+            <ul class="list-group">
+                <li class="list-group-item hover-lightblue" ng-repeat="meal in mealSearchResult"
+                    ng-click="addIngredient(ingredient._id)">{{meal.name}}
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+</div>

@@ -1,0 +1,6 @@
+//entrer les lignes ci dessous dans la console :: crée des variables globales (type PATH)
+//Pour linux, replacer "set" par "export"
+
+set STORMPATH_CLIENT_APIKEY_ID=2CAQNJWHJD8O82D926DM1JOW5
+set STORMPATH_CLIENT_APIKEY_SECRET= G6zVA2X7AvRe2M6fSiNv4rR/aCFxxC4Q61Y//5q9qJI
+set STORMPATH_APPLICATION_HREF=https://api.stormpath.com/v1/applications/5UuMr81z2fnECInr8cuxUj

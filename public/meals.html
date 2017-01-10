@@ -1,34 +1,93 @@
+<!-- NAVBAR !-->
+<div ng-include src="'navbar.html'"></div>
+
 <!-- HEADER AND MEAL COUNT -->
 <div class="jumbotron text-center">
     <h1>Total meals <span class="label label-info">{{meals.length}}</span></h1>
 </div>
 
-<!-- MEAL LIST -->
-<div id="meal-list" class="row">
-    <div class="col-sm-4 col-sm-offset-4">
-
-        <!-- LOOP OVER THE MEALS IN $scope.meals -->
-        <div class="checkbox" ng-repeat="meal in meals">
-            <label>
-                <input type="checkbox" ng-click="deleteMeal(meal._id)"> {{meal.name}}
-            </label>
-        </div>
-
+<!-- MEALS SEARCH -->
+<div class="col-sm-4 col-md-4 col-lg-4">
+    <div class="row">
+        <form>
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Meal name..." ng-model="formMealSearch.name">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit" ng-click="searchMealByName()">Search</button>
+                </span>
+            </div>
+        </form>
+    </div>
+    <div class="row" id="meal-search-result">
+        <ul class="list-group">
+            <li class="list-group-item hover-lightblue" ng-repeat="meal in mealSearchResult"
+                ng-click="addMeal(meal._id)">{{meal.name}}
+            </li>
+        </ul>
+    </div>
+    <div class="row" id="added-meals">
+        <ul class="list-group">
+            <li class="list-group-item hover-orange background-lightgreen" ng-repeat="meal in addedMeals">{{meal.name}}
+                <form>
+                    <div class="input-group">
+                      <span class="input-group-btn">
+                          <button class="btn btn-warning" type="submit"
+                                  ng-click="deleteAddedMeal(meal._id)">Delete</button>
+                    </div>
+                </form>
+            </li>
+        </ul>
     </div>
 </div>
 
-<!-- FORM TO CREATE MEAL -->
-<div id="meal-form" class="row">
-    <div class="col-sm-8 col-sm-offset-2 text-center">
-        <form>
-            <div class="form-group">
-                <!-- BIND THIS VALUE TO formData IN ANGULAR -->
-                <input type="text" class="form-control input-lg text-center" placeholder="meal name" ng-model="formData.name">
-                <input type="text" class="form-control input-lg text-center" placeholder="meal description" ng-model="formData.description">
+<div ng-repeat="meal in addedMeals">
+    <!-- NUTRITIONAL RESULTS -->
+    <div class="col-sm-4 col-md-4 col-lg-4">
+        <div class="panel panel-default">
+            <div class="panel-heading"><span>{{meal.name}}</span></div>
+            <div class="panel-body">
+                <span> Sodium (mg) </span><span class="badge"> {{meal.bilan.sodium_mg}} </span></br>
+                <span> Magnesium (mg) </span><span class="badge"> {{meal.bilan.magnesium_mg}} </span></br>
+                <span> Phosphore (mg) </span><span class="badge"> {{meal.bilan.phosphore_mg}} </span></br>
+                <span> Potassium (mg) </span><span class="badge"> {{meal.bilan.potassium_mg}} </span></br>
+                <span> Calcium (mg) </span><span class="badge"> {{meal.bilan.calcium_mg}} </span></br>
+                <span> Manganèse (mg) </span><span class="badge"> {{meal.bilan.manganese_mg}} </span></br>
+                <span> Fer (mg) </span><span class="badge"> {{meal.bilan.fer_mg}} </span></br>
+                <span> Cuivre (mg) </span><span class="badge"> {{meal.bilan.cuivre_mg}} </span></br>
+                <span> Zinc (mg) </span><span class="badge"> {{meal.bilan.zinc_mg}} </span></br>
+                <span> Selenium (µg) </span><span class="badge"> {{meal.bilan.selenium_microg}} </span></br>
+                <span> Iode (µg) </span><span class="badge"> {{meal.bilan.iode_microg}} </span></br>
+                <span> Proteine (g) </span><span class="badge"> {{meal.bilan.proteine_g}} </span></br>
+                <span> Proteine brute (g) </span><span class="badge"> {{meal.bilan.proteine_brute_g}} </span></br>
+                <span> Glucide (g) </span><span class="badge"> {{meal.bilan.glucide_g}} </span></br>
+                <span> Sucre (g) </span><span class="badge"> {{meal.bilan.sucre_g}} </span></br>
+                <span> Energie (kj) </span><span class="badge"> {{meal.bilan.energie_kj}} </span></br>
+                <span> Energie (kcal) </span><span class="badge"> {{meal.bilan.energie_kcal}} </span></br>
+                <span> Amidon (g) </span><span class="badge"> {{meal.bilan.amidon_g}} </span></br>
+                <span> Energie Jones (kj) </span><span class="badge"> {{meal.bilan.energie_jones_kj}} </span></br>
+                <span> Energie Jones (kcal) </span><span class="badge"> {{meal.bilan.energie_jones_kcal}} </span></br>
+                <span> Polyols (g) </span><span class="badge"> {{meal.bilan.polyols_g}} </span></br>
+                <span> Fibre (g) </span><span class="badge"> {{meal.bilan.fibre_g}} </span></br>
+                <span> Eau (g) </span><span class="badge"> {{meal.bilan.eau_g}} </span></br>
+                <span> Lipide (g) </span><span class="badge"> {{meal.bilan.lipide_g}} </span></br>
+                <span> Acide gras saturés (g) </span><span
+                    class="badge"> {{meal.bilan.acide_gras_sature_g}} </span></br>
+                <span> Beta carotene (µg) </span><span class="badge"> {{meal.bilan.beta_carotene_microg}} </span></br>
+                <span> Vitamine D (µg) </span><span class="badge"> {{meal.bilan.vitamine_d_microg}} </span></br>
+                <span> Vitamine E (mg) </span><span class="badge"> {{meal.bilan.vitamine_e_mg}} </span></br>
+                <span> Vitamine K1 (µg) </span><span class="badge"> {{meal.bilan.vitamine_k1_microg}} </span></br>
+                <span> Vitamine K2 (µg) </span><span class="badge"> {{meal.bilan.vitamine_k2_microg}} </span></br>
+                <span> Vitamine C (mg) </span><span class="badge"> {{meal.bilan.vitamine_c_mg}} </span></br>
+                <span> Vitamine B1 (mg) </span><span class="badge"> {{meal.bilan.vitamine_b1_mg}} </span></br>
+                <span> Vitamine B2 (mg) </span><span class="badge"> {{meal.bilan.vitamine_b2_mg}} </span></br>
+                <span> Vitamine B3 (mg) </span><span class="badge"> {{meal.bilan.vitamine_b3}} </span></br>
+                <span> Vitamine B5 (mg) </span><span class="badge"> {{meal.bilan.vitamine_b5_mg}} </span></br>
+                <span> Vitamine B6 (mg) </span><span class="badge"> {{meal.bilan.vitamine_b6_mg}} </span></br>
+                <span> Vitamine B12 (µg) </span><span class="badge"> {{meal.bilan.vitamine_b12_microg}} </span></br>
+                <span> Vitamine B9 (µg) </span><span class="badge"> {{meal.bilan.vitamine_b9_microg}} </span></br>
+                <span> Alcool (g) </span><span class="badge"> {{meal.bilan.alcool_g}} </span></br>
+                <span> Cholesterol (mg) </span><span class="badge"> {{meal.bilan.cholesterol_mg}} </span></br>
             </div>
-
-            <!-- createMeal() WILL CREATE NEW MEAL -->
-            <button type="submit" class="btn btn-primary btn-lg" ng-click="createMeal()">Add</button>
-        </form>
+        </div>
     </div>
 </div>

@@ -11,24 +11,31 @@
     <title>CornFlix</title>
 
     <!-- SCROLLS -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <!-- load bootstrap -->
     <style>
-        html            {overflow-y:scroll:}
-        body            {padding-top:50px;}
+        html {
+            overflow-y: scroll:
+        }
+
+        body {
+            padding-top: 50px;
+        }
     </style>
 
     <!-- SPELLS -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- load jquery -->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script><!-- load angular -->
-    <script data-require="ui-router@*" data-semver="0.2.10" src="https://rawgit.com/angular-ui/ui-router/0.2.10/release/angular-ui-router.js"></script>
+    <script data-require="ui-router@*" data-semver="0.2.10"
+            src="https://rawgit.com/angular-ui/ui-router/0.2.10/release/angular-ui-router.js"></script>
     <script src="core.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body ng-controller="mainController">
-    <div class="container">
-        <div ui-view=""></div>
-    </div>
+<div class="container">
+    <div ui-view=""></div>
+</div>
 
 </body>
 </html>
