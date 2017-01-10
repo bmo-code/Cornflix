@@ -12,7 +12,8 @@
     <div class="row">
         <form>
             <div class="input-group">
-              <input type="text" class="form-control" placeholder="Ingredient name..." ng-model="formIngredientSearch.name">
+                <input type="text" class="form-control" placeholder="Ingredient name..."
+                       ng-model="formIngredientSearch.name">
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="submit" ng-click="searchIngredientByName()">Search</button>
                 </span>
@@ -21,24 +22,29 @@
     </div>
     <div class="row" id="ingredient-search-result">
         <ul class="list-group">
-            <li class="list-group-item hover-lightblue" ng-repeat="ingredient in ingredientSearchResult" ng-click="addIngredient(ingredient._id)">{{ingredient.name}}</li>
+            <li class="list-group-item hover-lightblue" ng-repeat="ingredient in ingredientSearchResult"
+                ng-click="addIngredient(ingredient._id)">{{ingredient.name}}
+            </li>
         </ul>
     </div>
     <div class="row" id="added-ingredients">
         <ul class="list-group">
-            <li class="list-group-item hover-orange background-lightgreen" ng-repeat="ingredient in addedIngredients" >{{ingredient.name}} - {{ingredient.weight}} g
-              <form>
-                  <div class="input-group">
-                      <input type="number" class="form-control" default="100" step = "25" ng-model="ingredient.weight">
-                      <span class="input-group-btn">
-                          <button class="btn btn-default" type="submit" ng-click="setWeight(ingredient._id, ingredient.weight)">Set</button>
-                          &ensp;
-                          <button class="btn btn-warning" type="submit" ng-click="deleteAddedIngredient(ingredient._id)">Delete</button>
-                  </div>
-              </form>
+            <li class="list-group-item hover-orange background-lightgreen" ng-repeat="ingredient in addedIngredients">
+                {{ingredient.name}} - {{ingredient.weight}} g
+                <form>
+                    <div class="input-group">
+                        <input type="number" class="form-control" default="100" step="25" ng-model="ingredient.weight">
+                        <span class="input-group-btn">
+                          <button class="btn btn-default" type="submit"
+                                  ng-click="setWeight(ingredient._id, ingredient.weight)">Set</button>
+                            &ensp;
+                            <button class="btn btn-warning" type="submit"
+                                    ng-click="deleteAddedIngredient(ingredient._id)">Delete</button>
+                    </div>
+                </form>
             </li>
         </ul>
-      </div>
+    </div>
 
 </div>
 
@@ -47,11 +53,13 @@
     <form>
         <div class="panel panel-default">
             <!-- Default panel contents -->
-            <div class="panel-heading"><input id="new-meal-name" type="text" placeholder="Meal name..." ng-model="formCreateMeal.name"></div>
-            <div class="panel-body"><textarea id="new-meal-description" placeholder="Meal description..." ng-model="formCreateMeal.description"></textarea></div>
+            <div class="panel-heading"><input id="new-meal-name" type="text" placeholder="Meal name..."
+                                              ng-model="formCreateMeal.name"></div>
+            <div class="panel-body"><textarea id="new-meal-description" placeholder="Meal description..."
+                                              ng-model="formCreateMeal.description"></textarea></div>
         </div>
         <input type="checkbox" checked ng-click="setPublic()"><span> publié dans la communauté </span>
-        <button type="button" class="btn btn-primary float-right" ng-click="createMeal()">*    Créer    *</button>
+        <button type="button" class="btn btn-primary float-right" ng-click="createMeal()">* Créer *</button>
     </form>
 </div>
 
@@ -104,4 +112,4 @@
             <span> Cholesterol (mg) </span><span class="badge"> {{bilan.cholesterol_mg}} </span></br>
         </div>
     </div>
-  </div>
+</div>

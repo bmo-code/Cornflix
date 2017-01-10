@@ -1,8 +1,9 @@
 //  SET UP
-var express = require( 'express' );
-var stormpath = require( 'express-stormpath' ); //Gestion des comptes utilisateur
+var express = require('express');
+//Gestion des comptes utilisateur
+var stormpath = require('express-stormpath');
 var app = express();
-app.use( stormpath.init( app, {
+app.use(stormpath.init(app, {
     apiKey: {
         id: '4MIUE5CPOB6KEDF4UM71NAR6Z',
         secret: 'VmkWcyZ3qmfSaInhXIFrz/8Y3sQDi1GV1dTGhoYCsZk'
@@ -10,47 +11,43 @@ app.use( stormpath.init( app, {
     application: {
         href: `https://api.stormpath.com/v1/applications/5UuMr81z2fnECInr8cuxUj`
     }
-} ) );
+}));
 
-app.on( 'stormpath.ready', function() {
+app.on('stormpath.ready', function () {
 
     console.log("Application ready on 8080");
-} );
-var mongoose = require( 'mongoose')
-    , Schema = mongoose.Schema;
-var morgan = require( 'morgan' ); //log requests to the console
-var bodyParser = require( 'body-parser' ); //pull information from HTML POST
-var methodeOverride = require( 'method-override' ); //simulate DELETE and PUT
-var PDFDocument = require ('pdfkit');
-fs = require ('fs')
-/*
-app.get('/email', stormpath.loginRequired, function (req, res) {
-  res.send('Your email address is: ' + req.user.email);
 });
-*/
-app.post( '/api/userData',stormpath.getUser, function( req, res ) {
-  if (req.hasOwnProperty("user")){
-    console.log("POST /userData : " + req.user.fullName + " is connected");
-    res.send(JSON.stringify(req.user));
-  }
-} );
+var mongoose = require('mongoose')
+    , Schema = mongoose.Schema;
+var morgan = require('morgan'); //log requests to the console
+var bodyParser = require('body-parser'); //pull information from HTML POST
+var methodeOverride = require('method-override'); //simulate DELETE and PUT
+var PDFDocument = require('pdfkit');
+fs = require('fs')
+
+app.post('/api/userData', stormpath.getUser, function (req, res) {
+    if (req.hasOwnProperty("user")) {
+        console.log("POST /userData : " + req.user.fullName + " is connected");
+        res.send(JSON.stringify(req.user));
+    }
+});
 
 
 //fin du test Stormpath
 
 //  CONFIGURATION
-mongoose.connect( 'mongodb://localhost:27017/food' );
+mongoose.connect('mongodb://localhost:27017/food');
 
-app.use( express.static( __dirname + '/public' ) );
-app.use( morgan( 'dev' ) );
-app.use( bodyParser.urlencoded( { 'extended': 'true' } ) );
-app.use( bodyParser.json() );
-app.use( bodyParser.json( { type: 'application/vnd.api+json' } ) );
-app.use( methodeOverride() );
+app.use(express.static(__dirname + '/public'));
+app.use(morgan('dev'));
+app.use(bodyParser.urlencoded({'extended': 'true'}));
+app.use(bodyParser.json());
+app.use(bodyParser.json({type: 'application/vnd.api+json'}));
+app.use(methodeOverride());
 
 // LISTENING PORT
-app.listen( 8080 );
-console.log( "App listening on port 8080" );
+app.listen(8080);
+console.log("App listening on port 8080");
 
 //  MONGO MODELS
 var ingredientSchema = Schema({
@@ -104,63 +101,62 @@ var mealSchema = Schema({
     public: Boolean,
     name: String,
     description: String,
-    ingredients: [{ type: Schema.Types.ObjectId, ref: 'Ingredient'}],
-    quantity_g: [Number] 
-    //ingredients: [ { _id: String, name: String, weight: Number } ]
+    ingredients: [{type: Schema.Types.ObjectId, ref: 'Ingredient'}],
+    quantity_g: [Number]
 });
 
-var Ingredient = mongoose.model( 'Ingredient', ingredientSchema);
+var Ingredient = mongoose.model('Ingredient', ingredientSchema);
 
-var Meal = mongoose.model( 'Meal', mealSchema);
+var Meal = mongoose.model('Meal', mealSchema);
 
-var Feedback = mongoose.model( 'Feedback', {
+var Feedback = mongoose.model('Feedback', {
     mail: String,
     category: String,
     type: String,
     comment: String
-} );
+});
 
 //  ROUTES
-app.get( '/api/ingredients', function( req, res ) {
-    Ingredient.find( function( err, ingredients ) {
-        if ( err ) {
-            console.log( err );
-            return res.send( err );
+app.get('/api/ingredients', function (req, res) {
+    Ingredient.find(function (err, ingredients) {
+        if (err) {
+            console.log(err);
+            return res.send(err);
         }
-        res.json( ingredients );
-    } );
-} );
+        res.json(ingredients);
+    });
+});
 
-app.get( '/api/ingredients/:ingredient_name', function( req, res ) {
-    Ingredient.find( {
+app.get('/api/ingredients/:ingredient_name', function (req, res) {
+    Ingredient.find({
         name: req.params.ingredient_name
-    }, function( err, ingredients ) {
-        if ( err ) {
-            console.log( err );
-            return res.send( err );
+    }, function (err, ingredients) {
+        if (err) {
+            console.log(err);
+            return res.send(err);
         }
-            res.json( ingredients );
-    } );
-} );
+        res.json(ingredients);
+    });
+});
 
-app.get( '/api/meals', function( req, res ) {
+app.get('/api/meals', function (req, res) {
     Meal.find()
         .populate('ingredients')
-        .exec(function(err, meals) {
+        .exec(function (err, meals) {
             if (err) {
                 console.log(err);
                 return res.send(err);
             }
             res.json(meals);
         });
-/*    Meal.find( function( err, meals ) {
-        if ( err ) {
-            console.log( err );
-            return res.send( err );
-        }
-        res.json( meals );
-    });*/
-} );
+    /*    Meal.find( function( err, meals ) {
+     if ( err ) {
+     console.log( err );
+     return res.send( err );
+     }
+     res.json( meals );
+     });*/
+});
 
 app.get('/api/meal/pdfExport/:id', function (req, res) {
     console.log('test');
@@ -224,127 +220,113 @@ app.get('/api/meal/pdfExport/:id', function (req, res) {
                     bilan[key] += Math.round(( bilan[key] + meal.ingredients[i][key] ) * 100 / 100 * 10 / 100);//data[ i ].weight / 100 ); remplacer 10 par le poid
                 }
                 if (!isNaN(bilan[key]))
-                doc.fontSize(13)
-                    .text(key + ' ' + bilan[key], {
-                        align: 'left',
-                    });
+                    doc.fontSize(13)
+                        .text(key + ' ' + bilan[key], {
+                            align: 'left',
+                        });
             });
             doc.pipe(res);
             doc.end();
         });
 });
 
-app.post( '/api/meals', function( req, res ) {
-    Meal.create( req.body,
-        function( err, meal ) {
-            if ( err ) {
-                console.log( err );
-                return res.send( err );
+app.post('/api/meals', function (req, res) {
+    Meal.create(req.body,
+        function (err, meal) {
+            if (err) {
+                console.log(err);
+                return res.send(err);
             }
-            res.send( meal );
-        } );
-} );
+            res.send(meal);
+        });
+});
 
-app.delete( '/api/meals/:meal_id', function( req, res ) {
-    Meal.remove( {
+app.delete('/api/meals/:meal_id', function (req, res) {
+    Meal.remove({
         _id: req.params.meal_id
-    }, function( err, result ) {
-        if ( err ) {
-            console.log( err );
-            return res.send( err );
+    }, function (err, result) {
+        if (err) {
+            console.log(err);
+            return res.send(err);
         }
-        Meal.find( function( err, meals ) {
-            if ( err ) {
-                console.log( err );
-                return res.send( err );
-            }
-            res.json( meals );
-        } );
-    } );
-} );
-
-app.post( '/api/meals/searchByName', function( req, res ) {
-    Meal.find({
-        name: { "$regex": req.body.name, "$options": "i" }
-        })
-        .populate('ingredients')
-        .exec(function(err, meals) {
+        Meal.find(function (err, meals) {
             if (err) {
                 console.log(err);
                 return res.send(err);
             }
             res.json(meals);
         });
-/*    Meal.find( {
-        name: { "$regex": req.body.name, "$options": "i" }
-    }, function( err, meals ) {
-        if ( err ) {
-            console.log( err );
-            return res.send( err );
-        }
-        res.json( meals );
-    } );*/
-} )
+    });
+});
 
-app.post( '/api/profile/searchByEmail', function( req, res ) {
+app.post('/api/meals/searchByName', function (req, res) {
+    Meal.find({
+        name: {"$regex": req.body.name, "$options": "i"}
+    })
+        .populate('ingredients')
+        .exec(function (err, meals) {
+            if (err) {
+                console.log(err);
+                return res.send(err);
+            }
+            res.json(meals);
+        });
+})
+
+app.post('/api/profile/searchByEmail', function (req, res) {
     console.log("on est dedans");
     console.log(JSON.parse(req.body.email));
-    Meal.find( {
-        user_id: { "$regex": JSON.parse(req.body.email), "$options": "i" }
-    }, function( err, meals ) {
-        if ( err ) res.send( err );
+    Meal.find({
+        user_id: {"$regex": JSON.parse(req.body.email), "$options": "i"}
+    }, function (err, meals) {
+        if (err) res.send(err);
         console.log(meals);
-        res.json( meals );
-    } );
-} )
+        res.json(meals);
+    });
+})
 
-app.post( '/api/ingredients/searchById', function( req, res ) {
+app.post('/api/ingredients/searchById', function (req, res) {
     var ingredients = [];
     var i = 0;
-    for ( var j = 0; j < req.body.length; j++ ) {
-        Ingredient.findOne( {
-            _id: req.body[ j ]._id
-        }, function( err, ingredient ) {
-            if ( err ) {
-                console.log( err );
+    for (var j = 0; j < req.body.length; j++) {
+        Ingredient.findOne({
+            _id: req.body[j]._id
+        }, function (err, ingredient) {
+            if (err) {
+                console.log(err);
             }
             i++;
-            ingredients.push( ingredient );
-            if ( i >= req.body.length ) {
-                res.json( ingredients );
+            ingredients.push(ingredient);
+            if (i >= req.body.length) {
+                res.json(ingredients);
             }
-        } );
+        });
     }
-} )
+})
 
-app.post( '/api/ingredients/searchByName', function( req, res ) {
-    Ingredient.find( {
-        name: { "$regex": req.body.name, "$options": "i" }
-    }, function( err, ingredients ) {
-        if ( err ) {
-            console.log( err );
-            return res.send( err );
+app.post('/api/ingredients/searchByName', function (req, res) {
+    Ingredient.find({
+        name: {"$regex": req.body.name, "$options": "i"}
+    }, function (err, ingredients) {
+        if (err) {
+            console.log(err);
+            return res.send(err);
         }
-        res.json( ingredients );
-    } );
-} )
+        res.json(ingredients);
+    });
+})
 
-app.post( '/api/feedbacks', function( req, res ) {
-    Feedback.create( req.body,
-        function( err, feedback ) {
-            if ( err ) {
-                console.log( err );
-                return res.send( err );
+app.post('/api/feedbacks', function (req, res) {
+    Feedback.create(req.body,
+        function (err, feedback) {
+            if (err) {
+                console.log(err);
+                return res.send(err);
             }
-            res.send( feedback );
-        } );
-} )
+            res.send(feedback);
+        });
+})
 
-//  FILES ROUTES
-/*app.get( '/createMeal', function( req, res ) {
-    res.sendfile( './public/createMeal.html' );
-} );*/
-
-app.get( '*', function( req, res ) {
-    res.sendfile( './public/index.html' );
-} );
+app.get('*', function (req, res) {
+    res.sendfile('./public/index.html');
+});

@@ -21,8 +21,8 @@
 }
 
 #logo {
-  width : 50%;
-  height : 50%;
+    width: 50%;
+    height: 50%;
 }
 
 #ingredient-search-result {
@@ -44,7 +44,7 @@
 }
 
 #meal-list {
-    margin-bottom:30px;
+    margin-bottom: 30px;
 }
 
 #new-meal-name {

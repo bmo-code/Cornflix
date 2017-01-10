@@ -11,7 +11,7 @@
     <div class="row">
         <form>
             <div class="input-group">
-              <input type="text" class="form-control" placeholder="Meal name..." ng-model="formMealSearch.name">
+                <input type="text" class="form-control" placeholder="Meal name..." ng-model="formMealSearch.name">
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="submit" ng-click="searchMealByName()">Search</button>
                 </span>
@@ -20,18 +20,21 @@
     </div>
     <div class="row" id="meal-search-result">
         <ul class="list-group">
-            <li class="list-group-item hover-lightblue" ng-repeat="meal in mealSearchResult" ng-click="addMeal(meal._id)">{{meal.name}}</li>
+            <li class="list-group-item hover-lightblue" ng-repeat="meal in mealSearchResult"
+                ng-click="addMeal(meal._id)">{{meal.name}}
+            </li>
         </ul>
     </div>
     <div class="row" id="added-meals">
         <ul class="list-group">
-            <li class="list-group-item hover-orange background-lightgreen" ng-repeat="meal in addedMeals" >{{meal.name}}
-              <form>
-                  <div class="input-group">
+            <li class="list-group-item hover-orange background-lightgreen" ng-repeat="meal in addedMeals">{{meal.name}}
+                <form>
+                    <div class="input-group">
                       <span class="input-group-btn">
-                          <button class="btn btn-warning" type="submit" ng-click="deleteAddedMeal(meal._id)">Delete</button>
-                  </div>
-              </form>
+                          <button class="btn btn-warning" type="submit"
+                                  ng-click="deleteAddedMeal(meal._id)">Delete</button>
+                    </div>
+                </form>
             </li>
         </ul>
     </div>
@@ -67,7 +70,8 @@
                 <span> Fibre (g) </span><span class="badge"> {{meal.bilan.fibre_g}} </span></br>
                 <span> Eau (g) </span><span class="badge"> {{meal.bilan.eau_g}} </span></br>
                 <span> Lipide (g) </span><span class="badge"> {{meal.bilan.lipide_g}} </span></br>
-                <span> Acide gras saturés (g) </span><span class="badge"> {{meal.bilan.acide_gras_sature_g}} </span></br>
+                <span> Acide gras saturés (g) </span><span
+                    class="badge"> {{meal.bilan.acide_gras_sature_g}} </span></br>
                 <span> Beta carotene (µg) </span><span class="badge"> {{meal.bilan.beta_carotene_microg}} </span></br>
                 <span> Vitamine D (µg) </span><span class="badge"> {{meal.bilan.vitamine_d_microg}} </span></br>
                 <span> Vitamine E (mg) </span><span class="badge"> {{meal.bilan.vitamine_e_mg}} </span></br>
