@@ -223,6 +223,7 @@ function mainController( $scope, $http ) {
             bilan[key] = 0; // set the bilan for this nutrient to 0
             // Iterating through all ingredients
             ingredients.forEach(function(element, index, array) {
+                element.weight = quantities[index];
                 bilan[key] += Math.round((bilan[key] + ingredients[index][key] ) * 100 / 100 * quantities[index] / 100 );
             })
         })
