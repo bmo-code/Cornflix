@@ -221,10 +221,8 @@ function mainController( $scope, $http ) {
         // Iterating through all nutrients
         Object.keys(ingredients[0]).forEach(function(key, index) {
             bilan[key] = 0; // set the bilan for this nutrient to 0
-            console.log("Bilan " + key + " set to " + bilan[key]);
             // Iterating through all ingredients
             ingredients.forEach(function(element, index, array) {
-                console.log(index);
                 bilan[key] += Math.round((bilan[key] + ingredients[index][key] ) * 100 / 100 * quantities[index] / 100 );
             })
         })
