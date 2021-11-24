@@ -108,24 +108,24 @@ function mainController( $scope, $http ) {
     //  when submitting the add form, send meal to the node api
     $scope.createMeal = function() {
 
-        var i = [];
-        for ( j in $scope.addedIngredients )  {
-            i.push( {
-                _id: $scope.addedIngredients[ j ]._id,
-                name: $scope.addedIngredients[ j ].name,
-                weight: $scope.addedIngredients[ j ].weight
-            } );
+        var ingredientIds = [];
+        var ingredientQty = [];
+        for (var i in $scope.addedIngredients ) {
+            ingredientIds.push($scope.addedIngredients[i]._id);
+            ingredientQty.push($scope.addedIngredients[i].weight);
         }
         var meal = {
             user_id: $scope.userId,
             public: $scope.publicMeal,
             name: $scope.formCreateMeal.name,
             description: $scope.formCreateMeal.description,
-            ingredients: i
+            ingredients: ingredientIds,
+            quantity_g: ingredientQty
         }
         $http.post( '/api/meals', JSON.stringify( meal ) )
             .success( function( data ) {
-                alert( "________   Meal created !   ________" )
+                alert( "________   Meal created !   ________" );
+                //console.log(data);
             } )
             .error( function( data ) {
                 console.log( 'Error: ' + data );
@@ -206,7 +206,7 @@ function mainController( $scope, $http ) {
         for ( i in $scope.mealSearchResult ) {
             if ( $scope.mealSearchResult[ i ]._id == id ) {
                 var meal = $scope.mealSearchResult[ i ];
-                getMealBilan( meal.ingredients, function( data ) {
+                getMealBilan(meal.ingredients, meal.quantity_g, function( data ) {
                     meal.bilan = data;
                     $scope.addedDetailsMeal = meal;
                 } );
@@ -214,12 +214,22 @@ function mainController( $scope, $http ) {
         }
     }
 
-    function getMealBilan( ingredients, callback ) {
+    function getMealBilan(ingredients, quantities, callback ) {
         var bilan = {};
         var weight = 0;
-        $http.post( '/api/ingredients/searchById', ingredients )
-            .success( function( data ) {
-                data.forEach( function( element, index, array ) {
+    
+        // Iterating through all nutrients
+        Object.keys(ingredients[0]).forEach(function(key, index) {
+            bilan[key] = 0; // set the bilan for this nutrient to 0
+            // Iterating through all ingredients
+            ingredients.forEach(function(element, index, array) {
+                bilan[key] += Math.round((bilan[key] + ingredients[index][key] ) * 100 / 100 * quantities[index] / 100 );
+            })
+        })
+        callback(bilan);
+/*        $http.post( '/api/ingredients/searchById', ingredients)
+            .success(function(data) {
+                data.forEach(function(element, index, array ) {
                     element.weight = ingredients[ index ].weight;
                 } )
                 Object.keys( data[ 0 ] ).forEach( function( key, index ) {
@@ -235,7 +245,7 @@ function mainController( $scope, $http ) {
             } )
             .error( function( data ) {
                 console.log( 'Error : ' + data );
-            } )
+            } )*/
     };
 
     $scope.deleteAddedMeal = function( id ) {
